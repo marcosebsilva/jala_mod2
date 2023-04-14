@@ -1,7 +1,8 @@
 import pygame
 from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING
+from pygame.sprite import Sprite
 
-class Dinosaur:
+class Dinosaur(Sprite):
     X_POS = 80
     Y_POS = 310
     JUMP_VEL = 8.5
@@ -16,6 +17,7 @@ class Dinosaur:
         self.jumping = False
         self.jump_vel = self.JUMP_VEL
         self.ducking = False
+        
 
     # this doesn't seem to scale well
     # probably should have a list of states and a current state or some kind of event system
