@@ -1,21 +1,28 @@
 import pygame
+import random
 
 from dino_runner.components.obstacles.cactus import Cactus
-from dino_runner.utils.constants import SMALL_CACTUS
+from dino_runner.components.obstacles.bird import Bird
+
+from dino_runner.utils.constants import SMALL_CACTUS, LARGE_CACTUS
 
 class ObstacleManager:
-    def __init__(self):
-        self.obstacles = []
+    obstacles = []
 
     def update(self, game):
         if len(self.obstacles) == 0:
-            self.obstacles.append(Cactus(SMALL_CACTUS))
+            obstacle_options = [
+                Cactus(SMALL_CACTUS),
+                Cactus(LARGE_CACTUS, 300),
+                Bird()
+            ]
+            self.obstacles.append(random.choice(obstacle_options))
+
 
         for obstacle in self.obstacles:
             obstacle.update(game.game_speed, self.obstacles)
             if game.player.dino_rect.colliderect(obstacle.rect):
-                pygame.time.delay(1000)
-                game.playing = False
+                game.dino_alive = False
 
     def draw(self, screen):
         for obstacle in self.obstacles:
