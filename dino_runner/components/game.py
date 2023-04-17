@@ -18,16 +18,20 @@ class Game:
         self.x_pos_bg = 0
         self.y_pos_bg = 380
         self.player = Dinosaur()
+        self.dino_alive = True
         self.obstacle_manager = ObstacleManager()
         
     def run(self):
         # Game loop: events - update - draw
         self.playing = True
         while self.playing:
-            self.events()
-            self.update()
-            self.draw()
-        pygame.quit()    
+            if self.dino_alive:
+                self.events()
+                self.update()
+                self.draw()
+            else:
+                pygame.time.delay(1000)
+                pygame.quit()    
 
     def events(self):
         for event in pygame.event.get():
