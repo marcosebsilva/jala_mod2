@@ -77,6 +77,12 @@ class Game:
     def run(self):
         self.reset()
         # Game loop: events - update - draw
+        for i in range(3, 0, -1):
+            self.screen.fill((255, 255, 255))
+            self.draw_text(str(i), 50, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+            pygame.display.update()
+            pygame.time.delay(1000)
+
         self.playing = True
         while self.playing:
             self.events()
