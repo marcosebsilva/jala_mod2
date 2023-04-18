@@ -17,10 +17,7 @@ class Dinosaur(Sprite):
         self.jumping = False
         self.jump_vel = self.JUMP_VEL
         self.ducking = False
-        
 
-    # this doesn't seem to scale well
-    # probably should have a list of states and a current state or some kind of event system
     def update(self, user_input):
         if self.running:
             self.run()
@@ -48,6 +45,17 @@ class Dinosaur(Sprite):
         self.dino_rect.x = self.X_POS
         self.dino_rect.y = self.Y_POS
         self.step_index += 1
+
+    def reset(self):
+        self.image = RUNNING[0]
+        self.dino_rect = self.image.get_rect()
+        self.dino_rect.x = self.X_POS
+        self.dino_rect.y = self.Y_POS
+        self.step_index = 0
+        self.running = True 
+        self.jumping = False
+        self.jump_vel = self.JUMP_VEL
+        self.ducking = False
 
     def duck(self):
         self.image = DUCKING[0] if self.step_index < 5 else DUCKING[1]
