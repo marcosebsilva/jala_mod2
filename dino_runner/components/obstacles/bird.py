@@ -3,10 +3,11 @@ from dino_runner.utils.constants import BIRD
 import random
 
 class Bird(Obstacle):
+    step_index: int = 0
+    
     def __init__(self):
         super().__init__(BIRD, 0)
         self.rect.y = random.choice([260, 320, 150])
-        self.step_index = 0
 
     def draw(self, screen):
         image = self.image[0] if self.step_index < 5 else self.image[1]
