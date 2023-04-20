@@ -24,6 +24,8 @@ class Dinosaur(Sprite):
     ducking = False
     has_power_up = False
     shield = False
+    remaining_power_time = 0
+    hammer = False
     show_text = False
     shield_time_up = 0
 
@@ -86,4 +88,11 @@ class Dinosaur(Sprite):
             self.jump_vel = DEFAULT_JUMP_VEL
 
     def draw(self, screen: pygame.Surface):
-        screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        if not self.hammer:
+            screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        elif self.remaining_power_time <= 2:
+            print(self.power_up_time)
+            if(pygame.time.get_ticks() % 2 == 0):
+                screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
+        else:
+            screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))

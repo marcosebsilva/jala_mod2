@@ -1,6 +1,6 @@
 import pygame
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SHIELD, GAME_OVER, DEAD_DINO
 from dino_runner.utils.text_helpers import draw_text
 from dino_runner.components.dinosaur import Dinosaur
 
@@ -16,6 +16,7 @@ class Game:
     game_speed = DEFAULT_GAME_SPEED
     x_pos_bg = 0
     y_pos_bg = 380
+    high_score = 0
     score = 0
     death_count = 0
     
@@ -58,10 +59,18 @@ class Game:
         if self.death_count == 0:
             draw_text(self.screen,"Press any key to start", 22, half_screen_width, half_screen_height)
         else:
-            self.screen.blit(ICON, (half_screen_width - 20, half_screen_height - 140))
-            draw_text(self.screen,f"Your score was: {self.score}.", 22, half_screen_width, half_screen_height)
-            draw_text(self.screen,death_count_message, 22, half_screen_width, half_screen_height + 50)
-            draw_text(self.screen,"Press any key to restart.", 22, half_screen_width, half_screen_height + 100)
+            self.screen.blit(GAME_OVER, (half_screen_width - 200, half_screen_height - 140))
+            self.screen.blit(DEAD_DINO, (half_screen_width - 40, half_screen_height - 70))
+
+            draw_text(self.screen,f"Your score was: {self.score}.", 18, half_screen_width, half_screen_height + 50)
+            if(self.score >= self.high_score):
+                self.high_score = self.score
+                draw_text(self.screen,f"New high score!", 18, half_screen_width, half_screen_height + 85)
+            else:
+                draw_text(self.screen,f"Your high score is: {self.high_score}.", 18, half_screen_width, half_screen_height + 85)
+
+            draw_text(self.screen,death_count_message, 18, half_screen_width, half_screen_height + 130)
+            draw_text(self.screen,"Press any key to restart.", 18, half_screen_width, half_screen_height + 200)
 
         pygame.display.update()
         self.handle_menu_events()
@@ -108,24 +117,32 @@ class Game:
         self.player.update(user_input)
         self.update_score()
 
-    def draw_power_up_time(self):
+    def draw_feedback(self):
         if self.player.has_power_up:
-            time_to_show = round((self.player.power_up_time - pygame.time.get_ticks()) / 1000, 2)
-            if time_to_show >= 0:
-                draw_text(self.screen,f"{self.player.type.capitalize()} enabled for {time_to_show} seconds!", 18, 500, 40)
-            else:
-                self.player.has_power_up = False
-                self.player.type = DEFAULT_TYPE
+            if self.player.hammer:
+                time_to_show = round((self.player.power_up_time - pygame.time.get_ticks()) / 1000)
+                if time_to_show >= 0:
+                    self.player.remaining_power_time = time_to_show
+                    draw_text(self.screen,f"YOU ARE EMPOWERED FOR {time_to_show} SECONDS!", 15, SCREEN_WIDTH // 2, 100)
+
+                else:
+                    self.player.has_power_up = False
+                    self.player.type = DEFAULT_TYPE
+                    self.player.hammer = False
+            elif self.player.shield:
+                self.screen.blit(SHIELD, (SCREEN_WIDTH // 2, 40))
+                draw_text(self.screen,f"SHIELD ACTIVATED!", 15, SCREEN_WIDTH // 2, 20)
 
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255)) #Também aceita código hexadecimal "#FFFFFF"
         self.draw_background()
-        draw_text(self.screen,f"Score: {self.score}", 22, 1000, 50)
+        draw_text(self.screen,f"HIGH SCORE: {self.high_score}", 15, 120, 50)
+        draw_text(self.screen,f"SCORE: {self.score}", 15, 1000, 50)
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
         self.power_up_manager.draw(self.screen)
-        self.draw_power_up_time()
+        self.draw_feedback()
         pygame.display.update()
         pygame.display.flip()
 
